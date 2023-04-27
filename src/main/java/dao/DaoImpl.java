@@ -214,29 +214,18 @@ public class DaoImpl implements Dao {
         em.getTransaction().begin();
 
         try {
-            // Set the date threshold
             System.out.println("Enter threshold date (YYYY-MM-DD): ");
             String thresholdDateStr = bf.readLine();
             LocalDate thresholdDate = LocalDate.parse(thresholdDateStr);
-
-            // Build the CriteriaBuilder and CriteriaQuery objects
             CriteriaBuilder cb = em.getCriteriaBuilder();
             CriteriaQuery<User> cq = cb.createQuery(User.class);
-
-            // Define the root entity (User) and join with the Account entity
             Root<User> userRoot = cq.from(User.class);
             Join<User, Account> accountJoin = userRoot.join("account");
-
-            // Define the selection criteria
             Predicate balancePredicate = cb.greaterThan(accountJoin.get("balance"), 100000);
             Predicate datePredicate = cb.lessThan(userRoot.get("accountDate"), Date.valueOf(thresholdDate));
             Predicate finalPredicate = cb.and(balancePredicate, datePredicate);
-
-            // Build the query and execute it
             cq.select(userRoot).distinct(true).where(finalPredicate);
             List<User> usersToUpdate = em.createQuery(cq).getResultList();
-
-            // Update the account status for each user
             for (User user : usersToUpdate) {
                 for (Account account : user.getAccount()) {
                     if (account.getBalance() > 100000) {
@@ -245,8 +234,6 @@ public class DaoImpl implements Dao {
                     }
                 }
             }
-
-            // Commit the transaction and close the EntityManager
             em.getTransaction().commit();
             System.out.println("Account status updated successfully!");
         } catch (Exception ex) {
@@ -257,47 +244,53 @@ public class DaoImpl implements Dao {
         }
     }
 
-    public void checkAccountBalance() throws IOException {
+    public void checkAccountBalance() {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         EntityManager em2 = emf.createEntityManager();
         em2.getTransaction().begin();
-        System.out.println("Enter account ID : ");
-        int aid = Integer.parseInt(bf.readLine());
 
-        Account account = em2.find(Account.class, aid);
-        String accountType = account.getAccountType();
-        System.out.println("Enter the number of months the account has not been activated:");
-        int monthsInactive = Integer.parseInt(bf.readLine());
-        if (accountType.equalsIgnoreCase("Current")) {
-            int balance = account.getBalance();
-            if (balance < 100000) {
-                System.out.println("Insufficient balance");
+        try {
+            System.out.println("Enter account ID : ");
+            int aid = Integer.parseInt(br.readLine());
 
-                // Calculate the penalty
-                int penalty = monthsInactive * 250;
+            Account account = em2.find(Account.class, aid);
+            String accountType = account.getAccountType();
 
-                // Deduct the penalty from the balance
-                balance -= penalty;
-                account.setBalance(balance);
-                em2.merge(account);
+            System.out.println("Enter the number of months the account has not been activated:");
+            int monthsInactive = Integer.parseInt(br.readLine());
+
+            if (accountType.equalsIgnoreCase("Current")) {
+                int balance = account.getBalance();
+                if (balance < 100000) {
+                    System.out.println("Insufficient balance");
+
+                    // Calculate the penalty
+                    int penalty = monthsInactive * 250;
+
+                    // Deduct the penalty from the balance
+                    balance -= penalty;
+                    account.setBalance(balance);
+                    em2.merge(account);
+                }
+            } else if (accountType.equalsIgnoreCase("Savings")) {
+                int balance = account.getBalance();
+                if (balance < 10000) {
+                    System.out.println("Insufficient balance");
+
+                    // Calculate the penalty
+                    int penalty = monthsInactive * 150;
+
+                    // Deduct the penalty from the balance
+                    balance -= penalty;
+                    account.setBalance(balance);
+                    em2.merge(account);
+                }
             }
-        } else if (accountType.equalsIgnoreCase("Savings")) {
-            int balance = account.getBalance();
-            if (balance < 10000) {
-                System.out.println("Insufficient balance");
-
-                // Calculate the penalty
-                int penalty = monthsInactive * 150;
-
-                // Deduct the penalty from the balance
-                balance -= penalty;
-                account.setBalance(balance);
-                em2.merge(account);
-            }
+            em2.getTransaction().commit();
+            em2.close();
+        } catch (IOException | NumberFormatException e) {
+            System.out.println("Error: " + e.getMessage());
         }
-
-        em2.getTransaction().commit();
-        em2.close();
-
     }
 
 }
