@@ -66,3 +66,83 @@ public class Main {
         }
     }
 }
+/*
+* Enter your choice :
+1. Insert Data
+2. Insert Bank details
+3. Do Mapping
+4. Query 1 (account open before 1 jan 2023)
+5. Query 2 update status type
+7. Delete User
+8. Condition 3
+0. EXIT
+1
+Enter User Name
+arya
+Enter Today's date
+2023-09-09
+How many accounts you want to create
+2
+Enter accountType (savings/current)
+savings
+Enter Balance
+4500
+enter status
+regular
+Enter accountType (savings/current)
+current
+Enter company name
+reaj
+GST No:
+234
+Enter Balance
+59000
+enter status
+regular
+data added
+Enter your choice :
+1. Insert Data
+2. Insert Bank details
+3. Do Mapping
+4. Query 1 (account open before 1 jan 2023)
+5. Query 2 update status type
+7. Delete User
+8. Condition 3
+0. EXIT
+2
+Enter bank Name
+maharashtra gramin
+*
+* 4
+sujan  2022-09-09
+Enter your choice :
+1. Insert Data
+2. Insert Bank details
+3. Do Mapping
+4. Query 1 (account open before 1 jan 2023)
+5. Query 2 update status type
+7. Delete User
+8. Condition 3
+0. EXIT
+5
+Enter threshold date (YYYY-MM-DD):
+2021-07-08
+Account status updated successfully!
+Enter your choice :
+1. Insert Data
+2. Insert Bank details
+3. Do Mapping
+4. Query 1 (account open before 1 jan 2023)
+5. Query 2 update status type
+7. Delete User
+8. Condition 3
+0. EXIT
+8
+Enter account ID :
+7
+Enter the number of months the account has not been activated:
+2
+false
+59000
+Insufficient balance
+* */

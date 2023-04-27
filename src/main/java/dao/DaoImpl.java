@@ -258,9 +258,10 @@ public class DaoImpl implements Dao {
 
             System.out.println("Enter the number of months the account has not been activated:");
             int monthsInactive = Integer.parseInt(br.readLine());
-
-            if (accountType.equalsIgnoreCase("Current")) {
+            System.out.println(accountType.equalsIgnoreCase("Savings"));
+            if (accountType.equalsIgnoreCase("current")) {
                 int balance = account.getBalance();
+                System.out.println(balance);
                 if (balance < 100000) {
                     System.out.println("Insufficient balance");
 
